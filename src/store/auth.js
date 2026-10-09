@@ -1,19 +1,25 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { onAuthStateChanged } from 'firebase/auth'
+import { doc, getDoc } from 'firebase/firestore'
+import { auth, db } from '../firebase/init'
 
-// sessionStorage so a refresh keeps you logged in, but closing the tab logs you out
-export const isAuthenticated = ref(sessionStorage.getItem('isAuthenticated') === 'true')
+export const currentUser = ref(null)
+export const userRole = ref(null)
+export const isAuthenticated = computed(() => !!currentUser.value)
 
-// Hardcoded for the lab – real apps would verify against a backend
-export function login(username, password) {
-  if (username === 'admin' && password === 'Admin123!') {
-    isAuthenticated.value = true
-    sessionStorage.setItem('isAuthenticated', 'true')
-    return true
-  }
-  return false
+// Look up the user's role from Firestore (users/{uid})
+export async function fetchRole(uid) {
+  const snap = await getDoc(doc(db, 'users', uid))
+  return snap.exists() ? snap.data().role : 'user'
 }
 
-export function logout() {
-  isAuthenticated.value = false
-  sessionStorage.removeItem('isAuthenticated')
-}
+// Firebase restores the session asynchronously on page load.
+// The router waits for this so a refresh doesn't kick you to /login.
+let resolveReady
+export const authReady = new Promise((resolve) => (resolveReady = resolve))
+
+onAuthStateChanged(auth, async (user) => {
+  currentUser.value = user
+  userRole.value = user ? await fetchRole(user.uid) : null
+  resolveReady()
+})

@@ -1,18 +1,10 @@
 <script setup>
-import { useRouter } from "vue-router";
-import { isAuthenticated, logout } from "@/store/auth";
-
-const router = useRouter();
-
-const handleLogout = () => {
-  logout();
-  router.push({ name: "Login" });
-};
+import { currentUser, userRole, isAuthenticated } from '@/store/auth'
 </script>
 
 <template>
   <div class="container">
-    <header class="d-flex justify-content-center py-3">
+    <header class="d-flex justify-content-center align-items-center py-3">
       <ul class="nav nav-pills">
         <li class="nav-item">
           <router-link to="/" class="nav-link" exact-active-class="active">Home</router-link>
@@ -20,13 +12,24 @@ const handleLogout = () => {
         <li class="nav-item">
           <router-link to="/about" class="nav-link" active-class="active">About</router-link>
         </li>
-        <li v-if="!isAuthenticated" class="nav-item">
-          <router-link to="/login" class="nav-link" active-class="active">Login</router-link>
+        <li v-if="userRole === 'admin'" class="nav-item">
+          <router-link to="/admin" class="nav-link" active-class="active">Admin</router-link>
         </li>
+        <template v-if="!isAuthenticated">
+          <li class="nav-item">
+            <router-link to="/login" class="nav-link" active-class="active">Login</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link to="/register" class="nav-link" active-class="active">Register</router-link>
+          </li>
+        </template>
         <li v-else class="nav-item">
-          <button class="nav-link" @click="handleLogout">Logout</button>
+          <router-link to="/logout" class="nav-link">Logout</router-link>
         </li>
       </ul>
+      <span v-if="isAuthenticated" class="ms-3 small text-muted">
+        {{ currentUser.email }} ({{ userRole }})
+      </span>
     </header>
   </div>
 </template>

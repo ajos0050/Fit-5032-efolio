@@ -1,14 +1,20 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import { isAuthenticated } from '../store/auth'
+import { authReady, isAuthenticated, userRole } from '../store/auth'
 
 const routes = [
   { path: '/', name: 'Home', component: HomeView },
   {
     path: '/about',
     name: 'About',
-    component: () => import('../views/AboutView.vue'), // lazy loaded
+    component: () => import('../views/AboutView.vue'),
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/admin',
+    name: 'Admin',
+    component: () => import('../views/AdminView.vue'),
+    meta: { requiresAuth: true, role: 'admin' } // admin only
   },
   {
     path: '/login',
@@ -16,7 +22,13 @@ const routes = [
     component: () => import('../views/LoginView.vue'),
     meta: { guestOnly: true }
   },
-  // Unknown URLs go home instead of a blank page
+  {
+    path: '/register',
+    name: 'Register',
+    component: () => import('../views/RegisterView.vue'),
+    meta: { guestOnly: true }
+  },
+  { path: '/logout', name: 'Logout', component: () => import('../views/LogoutView.vue') },
   { path: '/:pathMatch(.*)*', redirect: '/' }
 ]
 
@@ -25,11 +37,15 @@ const router = createRouter({
   routes
 })
 
-// Global guard – runs before every navigation
-router.beforeEach((to) => {
+router.beforeEach(async (to) => {
+  await authReady // wait for Firebase to restore the session first
+
   if (to.meta.requiresAuth && !isAuthenticated.value) {
-    // Remember where they were going so we can send them back after login
     return { name: 'Login', query: { redirect: to.fullPath } }
+  }
+  if (to.meta.role && userRole.value !== to.meta.role) {
+    alert('Access denied: admins only.')
+    return { name: 'Home' }
   }
   if (to.meta.guestOnly && isAuthenticated.value) {
     return { name: 'Home' }
