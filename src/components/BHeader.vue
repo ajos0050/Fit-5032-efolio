@@ -4,8 +4,8 @@ import { currentUser, userRole, isAuthenticated } from '@/store/auth'
 
 <template>
   <div class="container">
-    <header class="d-flex justify-content-center align-items-center py-3">
-      <ul class="nav nav-pills">
+    <header class="d-flex flex-wrap justify-content-center align-items-center py-3">
+      <ul class="nav nav-pills flex-wrap justify-content-center">
         <li class="nav-item">
           <router-link to="/" class="nav-link" exact-active-class="active">Home</router-link>
         </li>
@@ -17,6 +17,15 @@ import { currentUser, userRole, isAuthenticated } from '@/store/auth'
         </li>
         <li class="nav-item">
           <router-link to="/GetBookCount" class="nav-link" active-class="active">Get Book Count</router-link>
+        </li>
+        <li class="nav-item">
+          <router-link to="/WeatherCheck" class="nav-link" active-class="active">Get Weather</router-link>
+        </li>
+        <li class="nav-item">
+          <router-link to="/CountBookAPI" class="nav-link" active-class="active">Count Book API</router-link>
+        </li>
+        <li class="nav-item">
+          <router-link to="/GetAllBookAPI" class="nav-link" active-class="active">Get All Book API</router-link>
         </li>
         <li v-if="userRole === 'admin'" class="nav-item">
           <router-link to="/admin" class="nav-link" active-class="active">Admin</router-link>

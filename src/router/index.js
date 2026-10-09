@@ -27,6 +27,21 @@ const routes = [
     component: () => import('../views/GetBookCountView.vue')
   },
   {
+    path: '/WeatherCheck',
+    name: 'GetWeather',
+    component: () => import('../views/WeatherView.vue')
+  },
+  {
+    path: '/CountBookAPI',
+    name: 'CountBookAPI',
+    component: () => import('../views/CountBookAPI.vue')
+  },
+  {
+    path: '/GetAllBookAPI',
+    name: 'GetAllBookAPI',
+    component: () => import('../views/GetAllBookAPI.vue')
+  },
+  {
     path: '/login',
     name: 'Login',
     component: () => import('../views/LoginView.vue'),
