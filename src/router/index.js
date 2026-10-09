@@ -22,6 +22,11 @@ const routes = [
     component: () => import('../views/AddBookView.vue')
   },
   {
+    path: '/GetBookCount',
+    name: 'GetBookCount',
+    component: () => import('../views/GetBookCountView.vue')
+  },
+  {
     path: '/login',
     name: 'Login',
     component: () => import('../views/LoginView.vue'),

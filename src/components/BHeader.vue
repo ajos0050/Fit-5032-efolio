@@ -15,6 +15,9 @@ import { currentUser, userRole, isAuthenticated } from '@/store/auth'
         <li class="nav-item">
           <router-link to="/addbook" class="nav-link" active-class="active">Add Book</router-link>
         </li>
+        <li class="nav-item">
+          <router-link to="/GetBookCount" class="nav-link" active-class="active">Get Book Count</router-link>
+        </li>
         <li v-if="userRole === 'admin'" class="nav-item">
           <router-link to="/admin" class="nav-link" active-class="active">Admin</router-link>
         </li>
